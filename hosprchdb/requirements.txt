@@ -1,0 +1,8 @@
+Flask==2.3.*
+flask-restapi==0.3.*
+Flask-RESTful==0.3.*
+scikit-learn==1.4.*
+numpy==1.26.*
+pandas==2.2.*
+Flask-Cors==4.0.*
+hana-ml==2.19.*
