@@ -1,0 +1,43 @@
+CLASS zcl_predict_house_price DEFINITION
+  PUBLIC
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+
+    INTERFACES if_http_service_extension .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+ENDCLASS.
+
+
+
+CLASS zcl_predict_house_price IMPLEMENTATION.
+
+
+  METHOD if_http_service_extension~handle_request.
+    TYPES: BEGIN OF lty_s_info,
+             HousePrice   TYPE string,
+           END OF lty_s_info.
+    DATA ls_info TYPE lty_s_info.
+    DATA(lv_area) = request->get_form_field( 'Area' ).
+    DATA(lv_Bedrooms) = request->get_form_field( 'Bedrooms' ).
+    DATA(lv_Bathrooms) = request->get_form_field( 'Bathrooms' ).
+    DATA(lv_Stories) = request->get_form_field( 'Stories' ).
+    DATA(lv_Guest) = request->get_form_field( 'Guest' ).
+    DATA(lv_Basement) = request->get_form_field( 'Basement' ).
+    DATA(lv_Parking) = request->get_form_field( 'Parking' ).
+    DATA(lv_AreaPerBedRooma) = request->get_form_field( 'AreaPerBedRoom' ).
+    DATA(lv_BBRatio) = request->get_form_field( 'BBRatio' ).
+
+    DATA(lv_price) = NEW zcl_access_ml_api( )->predict_house_price( EXPORTING iv_area = CONV #( lv_area )
+                                           iv_Bedrooms = CONV #( lv_Bedrooms )
+                                           iv_Bathrooms  = CONV #( lv_Bathrooms )
+                                           iv_Stories = CONV #( lv_Stories )
+                                           iv_Guest = CONV #( lv_Guest )
+                                           iv_Basement = CONV #( lv_Basement )
+                                           iv_Parking = CONV #( lv_Parking )
+                                           iv_AreaPerBedRoom = CONV #( lv_AreaPerBedRooma )
+                                           iv_BBRatio = CONV #( lv_BBRatio ) ).
+    response->set_text( CONV #( lv_price ) ).
+  ENDMETHOD.
+ENDCLASS.

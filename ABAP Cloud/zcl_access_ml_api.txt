@@ -1,0 +1,50 @@
+CLASS zcl_access_ml_api DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+    INTERFACES if_oo_adt_classrun.
+
+    METHODS: predict_house_price IMPORTING
+                                           !iv_area           TYPE int4
+                                           !iv_Bedrooms       TYPE int4
+                                           !iv_Bathrooms      TYPE int4
+                                           !iv_Stories        TYPE int4
+                                           !iv_Guest          TYPE int4
+                                           !iv_Basement       TYPE int4
+                                           !iv_Parking        TYPE int4
+                                           !iv_AreaPerBedRoom TYPE menge_d
+                                           !iv_BBRatio        TYPE menge_d
+                                 RETURNING VALUE(rv_price)    TYPE string.
+
+  PROTECTED SECTION.
+
+  PRIVATE SECTION.
+
+ENDCLASS.
+
+CLASS zcl_access_ml_api IMPLEMENTATION.
+
+  METHOD: predict_house_price.
+
+    TRY.
+        DATA(lv_base_url) = 'https://.......hana.ondemand.com/?Area='.
+        DATA(lv_url) = |{ lv_base_url }{  iv_area }&Bedrooms={ iv_Bedrooms }&Bathrooms={ iv_Bathrooms }&Stories={ iv_Stories }&Guest={ iv_guest }&Basement={ iv_basement }&Parking={ iv_parking }&AreaPerBedRoom={ iv_areaperbedroom }&BBRatio={ iv_bbratio }|.
+        DATA(lo_http) = cl_http_destination_provider=>create_by_url( lv_url ).
+        DATA(lo_client) = cl_web_http_client_manager=>create_by_http_destination( lo_http ).
+        DATA(lo_request) = lo_client->get_http_request( ).
+        DATA(lo_response) = lo_client->execute( if_web_http_client=>get ).
+        rv_price = lo_response->get_text( ).
+      CATCH cx_web_message_error.
+        rv_price = 'error'.
+      CATCH cx_web_http_client_error.
+        rv_price = 'error'.
+      CATCH cx_http_dest_provider_error.
+        rv_price = 'error'.
+    ENDTRY.
+  ENDMETHOD.
+
+
+
+ENDCLASS.
