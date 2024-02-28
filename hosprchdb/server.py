@@ -11,7 +11,7 @@ if not os.path.exists('model.pkl'):
     host = ".......hanacloud.ondemand.com"
     port = 443
     user = 'DBADMIN'
-    password = 'Abap@2113'
+    password = ''
     cc = ConnectionContext(host, port, user, password)
     with cc:
         df = (cc.table(table= 'HouseData', schema='HOUSE' ).select('*'))
